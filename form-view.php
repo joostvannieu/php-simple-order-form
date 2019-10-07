@@ -22,7 +22,7 @@
             </li>
         </ul>
     </nav>
-    <form method="post">
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="email">E-mail:</label>
@@ -36,22 +36,22 @@
 
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label for="street">Street:</label>
-                    <input type="text" name="street" id="street" class="form-control">
+                    <label for="street">Street:*</label>
+                    <input type="text" name="street" id="street" class="form-control" required>
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="streetnumber">Street number:</label>
-                    <input type="text" id="streetnumber" name="streetnumber" class="form-control">
+                    <label for="streetnumber">Street number:*</label>
+                    <input type="number" step="1" min="1" id="streetnumber" name="streetnumber" class="form-control" required>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label for="city">City:</label>
-                    <input type="text" id="city" name="city" class="form-control">
+                    <label for="city">City:*</label>
+                    <input type="text" id="city" name="city" class="form-control" required>
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="zipcode">Zipcode</label>
-                    <input type="text" id="zipcode" name="zipcode" class="form-control">
+                    <label for="zipcode">Zipcode:*</label>
+                    <input type="number" step="1" min="1000" max="9999" id="zipcode" name="zipcode" class="form-control" required>
                 </div>
             </div>
         </fieldset>
