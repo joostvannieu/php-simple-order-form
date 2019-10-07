@@ -9,6 +9,9 @@
           rel="stylesheet"/>
     <title>Order food & drinks</title>
 </head>
+<header class="alert alert-danger">
+    <?php errorMessaging(); ?>
+</header>
 <body>
 <div class="container">
     <h1>Order food in restaurant "the Personal Ham Processors"</h1>

@@ -36,42 +36,45 @@ $totalValue = 0;
 
 require 'form-view.php';
 
-
 //Your code here
+function errorMessaging(){
+    return
+}
+
 function validate(string $key, $input) : string {
     switch ($key) {
         case "email":
                 // check if e-mail address is well-formed
-                if ($_POST["email"]!=="" && !filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)) {
+                if ($input!=="" && !filter_var($input, FILTER_VALIDATE_EMAIL)) {
                     return "Invalid email format";
                 }
             break;
         case "street":
-            if (empty($_POST["street"])){
+            if (empty($input)){
                 return "Street is required";
             }
             break;
         case "streetnumber":
-            if (empty($_POST["streetnumber"])){
+            if (empty($input)){
                 return "Streetnumber is required";
-            } elseif (!filter_var($_POST["streetnumber"], FILTER_VALIDATE_INT)) {
+            } elseif (!filter_var($input, FILTER_VALIDATE_INT)) {
                 return "Invalid streetnumber";
             }
             break;
         case "city":
-            if (empty($_POST["city"])){
+            if (empty($input)){
                 return "City is required";
             }
             break;
         case "zipcode":
-            if (empty($_POST["zipcode"])){
+            if (empty($input)){
                 return "Zipcode is required";
-            } elseif (!filter_var($_POST["zipcode"], FILTER_VALIDATE_INT)) {
+            } elseif (!filter_var($input, FILTER_VALIDATE_INT)) {
                 return "Invalid zipcode";
             }
             break;
         case "products":
-            if (empty($_POST["products"])) {
+            if (!$input) {
                 return "Please select products you would like to order";
             }
             break;
@@ -80,17 +83,26 @@ function validate(string $key, $input) : string {
     return "";
 }
 
+
 function getFormData() {
-    $email = $street = $city = "";
+    $email = $street = $city = $errormsg = "";
     $streetnumber = $zipcode = 0;
     $checkvalue = false;
+
 
     if ($_SERVER["REQUEST_METHOD"] == "POST"){
         whatIsHappening();
         foreach ($_POST as $key => $value) {
-            echo nl2br (validate($key, htmlspecialchars($value)) . "\n");
-            echo nl2br ($key . " " . $value . "\n");
-
+            if (!is_array($value)) {
+                echo nl2br(validate($key, htmlspecialchars($value)));
+                echo nl2br($key . ": " . $value . "\n");
+                $errormsg
+            }else {
+                foreach ($value as $keyInner => $item) {
+                    echo nl2br(validate($key, $item));
+                    echo nl2br($key . ": " . $GLOBALS["products"][$keyInner]["name"] . "\n");
+                }
+            }
         }
     }
 }
