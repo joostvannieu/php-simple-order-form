@@ -9,10 +9,17 @@
           rel="stylesheet"/>
     <title>Order food & drinks</title>
 </head>
-<header class="alert alert-danger">
-    <?php errorMessaging(); ?>
-</header>
 <body>
+<header class="alert alert-danger <?php if (empty($_SESSION["errors"][0])){echo "d-none";} ?>">
+    <?php
+        foreach ($_SESSION["errors"] as $msg) {
+            echo nl2br($msg . "\n");
+        }
+    ?>
+</header>
+<header class="alert alert-success <?php if (!empty($_SESSION["errors"][0])){echo "d-none";} ?>">
+    Thank you for your order.
+</header>
 <div class="container">
     <h1>Order food in restaurant "the Personal Ham Processors"</h1>
     <nav>
@@ -71,7 +78,7 @@
         <button type="submit" class="btn btn-primary">Order!</button>
     </form>
 
-    <footer>You already ordered <strong>&euro; <?php echo $totalValue ?></strong> in food and drinks.</footer>
+    <footer>You already ordered <strong>&euro; <?php echo $_SESSION["totalValue"] ?></strong> in food and drinks.</footer>
 </div>
 
 <style>
