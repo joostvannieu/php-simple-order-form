@@ -16,25 +16,28 @@ function whatIsHappening() {
     var_dump($_SESSION);
 }
 
-//your products with their price.
-$products = [
-    ['name' => 'Club Ham', 'price' => 3.20],
-    ['name' => 'Club Cheese', 'price' => 3],
-    ['name' => 'Club Cheese & Ham', 'price' => 4],
-    ['name' => 'Club Chicken', 'price' => 4],
-    ['name' => 'Club Salmon', 'price' => 5]
-];
 
-$products = [
-    ['name' => 'Cola', 'price' => 2],
-    ['name' => 'Fanta', 'price' => 2],
-    ['name' => 'Sprite', 'price' => 2],
-    ['name' => 'Ice-tea', 'price' => 3],
-];
+//your products with their price.
+if ($_GET["food"] == 1 || $_GET["food"] == null) {
+    $products = [
+        ['name' => 'Club Ham', 'price' => 3.20],
+        ['name' => 'Club Cheese', 'price' => 3],
+        ['name' => 'Club Cheese & Ham', 'price' => 4],
+        ['name' => 'Club Chicken', 'price' => 4],
+        ['name' => 'Club Salmon', 'price' => 5]
+    ];
+} elseif ($_GET["food"] == 0) {
+    $products = [
+        ['name' => 'Cola', 'price' => 2],
+        ['name' => 'Fanta', 'price' => 2],
+        ['name' => 'Sprite', 'price' => 2],
+        ['name' => 'Ice-tea', 'price' => 3],
+    ];
+}
 
 $totalValue = 0;
 
-require 'form-view.php';
+
 
 //Your code here
 function test_input($data) {
@@ -52,10 +55,13 @@ $order = $errorMsgs = [];
 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (empty($_POST["email"])) {
+
+    $_SESSION = $_POST;
+
+    if (empty($_SESSION["email"])) {
         $email = "";
     } else {
-        $email = test_input($_POST["email"]);
+        $email = test_input($_SESSION["email"]);
         // check if email address syntax is valid
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $emailError = "Invalid email format";
@@ -63,47 +69,47 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    if (empty($_POST["street"])){
+    if (empty($_SESSION["street"])){
         $streetError = "Street is required";
         $errorMsgs[] = $streetError;
     } else {
-        $street = test_input($_POST["street"]);
+        $street = test_input($_SESSION["street"]);
     }
 
-    if (empty($_POST["streetnumber"])){
+    if (empty($_SESSION["streetnumber"])){
         $streetnumberError = "Streetnumber is required";
         $errorMsgs[] = $streetnumberError;
     } else {
-        $streetnumber = test_input($_POST["streetnumber"]);
+        $streetnumber = test_input($_SESSION["streetnumber"]);
         if (!filter_var($streetnumber, FILTER_VALIDATE_INT)){
             $streetnumberError = "Streetnumber is invalid";
             $errorMsgs[] = $streetnumberError;
         }
     }
 
-    if (empty($_POST["city"])){
+    if (empty($_SESSION["city"])){
         $cityError = "City is required";
         $errorMsgs[] = $cityError;
     } else {
-        $city = test_input($_POST["city"]);
+        $city = test_input($_SESSION["city"]);
     }
 
-    if (empty($_POST["zipcode"])){
+    if (empty($_SESSION["zipcode"])){
         $zipcodeError = "Zipcode is required";
         $errorMsgs[] = $zipcodeError;
     } else {
-        $zipcode = test_input($_POST["zipcode"]);
+        $zipcode = test_input($_SESSION["zipcode"]);
         if (!filter_var($zipcode, FILTER_VALIDATE_INT)) {
             $zipcodeError = "zipcode is invalid";
             $errorMsgs[] = $zipcodeError;
         }
     }
 
-    if (empty($_POST["products"])) {
-        $orderError = "what?";
+    if (empty($_SESSION["products"])) {
+        $orderError = "Please select items you would like to order";
         $errorMsgs[] = $orderError;
     } else {
-            $order = $_POST["products"];
+            $order = $_SESSION["products"];
     }
 
 
@@ -116,6 +122,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     whatIsHappening();
 
+    /*
     if (!empty($errorMsgs)){
         foreach ($errorMsgs as $msg){
             echo nl2br($msg . "\n");
@@ -123,4 +130,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     echo nl2br($email . "\n" . $street . "\n" . $streetnumber . "\n" . $city . "\n" . $zipcode . "\n");
     echo number_format($totalValue, 2);
+    */
 }
+
+// keep this at the bottom
+require 'form-view.php';
