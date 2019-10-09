@@ -47,11 +47,12 @@ function test_input($data) {
     return $data;
 }
 
-$emailError = $streetError = $streetnumberError = $cityError = $zipcodeError = $orderError = "";
-$email = $street = $city = "";
+$emailError = $streetError = $streetnumberError = $cityError = $zipcodeError = $orderError = $deliveryError = "";
+$email = $street = $city = $delivery = "";
 $streetnumber = $zipcode = 0;
 $order = $errorMsgs = [];
-
+$deliveryTime = time();
+$isValidOrder = false;
 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -112,25 +113,54 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $order = $_SESSION["products"];
     }
 
+    if (empty($_SESSION["delivery"])){
+        $deliveryError = "Delivery method is required";
+        $errorMsgs[] = $deliveryError;
+    } else {
+        $delivery = test_input($_SESSION["delivery"]);
+    }
 
     foreach ($order as $key => $item){
         $totalValue +=  $products[$key]["price"];
         $_SESSION["totalValue"] = $totalValue;
     }
 
+    //If the order is completely without errors
     $_SESSION["errors"] = $errorMsgs;
+    if (empty($_SESSION["errors"])){
+        $isValidOrder = true;
+        //$_SESSION["isValid"] = $isValidOrder;
+    }
+
+    //whatIsHappening();
+
+    //If the order is valid
+    if ($isValidOrder){
+        if ($_SESSION["delivery"] == "express"){
+            $deliveryTime += (45 * 60);
+        }else {
+            $deliveryTime += (2 * 60 * 60);
+        }
+        if (!isset($_COOKIE["PHPsandwiches"])){
+            setcookie("PHPsandwiches", (string)$_SESSION["totalValue"], time() + (10 * 365 * 24 * 60 * 60));
+        } else {
+            setcookie("PHPsandwiches", (string)($_COOKIE["PHPsandwiches"] + $_SESSION["totalValue"]), time() + (10 * 365 * 24 * 60 * 60));
+        }
+
+        $_SESSION["checker"] = true;
+        //clear session for next order
+        //unset($_SESSION);
+        unset($_POST);
+        header('Location:'.$_SERVER['PHP_SELF']);
+        //die;
+    }
+
+}
+
+if ($_SESSION["checker"]){
 
     whatIsHappening();
 
-    /*
-    if (!empty($errorMsgs)){
-        foreach ($errorMsgs as $msg){
-            echo nl2br($msg . "\n");
-        }
-    }
-    echo nl2br($email . "\n" . $street . "\n" . $streetnumber . "\n" . $city . "\n" . $zipcode . "\n");
-    echo number_format($totalValue, 2);
-    */
 }
 
 // keep this at the bottom

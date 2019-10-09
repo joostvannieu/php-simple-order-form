@@ -18,13 +18,15 @@
         }
     ?>
 </header>
-<header class="alert alert-success <?php if (!empty($_SESSION["errors"][0])){echo "d-none";} ?>">
-    Thank you for your order.
+<header class="alert alert-success <?php if (!$_SESSION["checker"]){echo "d-none"; $_SESSION["checker"] = false; var_dump($_SESSION["checker"]);} ?>">
+    Thank you for your order.<br>
+    It should arrive at <?php echo date("H:i", $deliveryTime) ?>
 </header>
 <!-- END Header for user feedback on input -->
 
 <div class="container">
     <h1>Order food in restaurant "the Personal Ham Processors"</h1>
+
     <nav>
         <ul class="nav">
             <li class="nav-item">
@@ -84,11 +86,26 @@
                     &euro; <?php echo number_format($product['price'], 2) ?></label><br />
             <?php endforeach; ?>
         </fieldset>
+        <fieldset>
+            <legend>Delivery</legend>
+            <div>
+                <div>
+                    <input type="radio" id="deliveryMethod1"
+                           name="delivery" value="regular" checked>
+                    <label for="deliveryMethod1">Regular delivery: 2 hours</label>
+                </div>
+                <div>
+                    <input type="radio" id="deliveryMethod2"
+                           name="delivery" value="express">
+                    <label for="deliveryMethod2">Express delivery: 45 minutes</label>
+                </div>
+            </div>
+        </fieldset>
 
         <button type="submit" class="btn btn-primary">Order!</button>
     </form>
 
-    <footer>You already ordered <strong>&euro; <?php echo /*$_SESSION["totalValue"]*/ $totalValue ?></strong> in food and drinks.</footer>
+    <footer>You already ordered <strong>&euro; <?php echo $_COOKIE["PHPsandwiches"]?></strong> in food and drinks.</footer>
 </div>
 
 <style>
